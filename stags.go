@@ -1,4 +1,4 @@
-// Package stag exposes functionality to get struct tags values.
+// Package stags exposes functionality to get struct tags values.
 //
 // Go offers struct tags which are discoverable via reflection but
 // you can get the value associated with key in the tag string and
