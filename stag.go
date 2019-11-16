@@ -1,9 +1,10 @@
 // Package stag exposes functionality to get struct tags values.
-
+//
 // Go offers struct tags which are discoverable via reflection but
 // you can get the value associated with key in the tag string and
-// convert it to approperiate type easy, clean and quickly.
-
+// convert it to approperiate type by stag library easy, clean and quickly.
+// it supports most of the data types: int, int8, int32, int64, uint, uint8,
+// uint16, uint32, uint64, float32, float64, bool
 package stag
 
 import (
@@ -171,7 +172,7 @@ func LookupInt64(s interface{}, field, tag string) (value int64, ok bool) {
 
 // LookupUint is like LookupInt but for uint numbers.
 func LookupUint(s interface{}, field, tag string) (value uint, ok bool) {
-	n, ok := getNum(s, field, tag, vUINT8)
+	n, ok := getNum(s, field, tag, vUINT)
 	value = uint(n.(uint64))
 	return
 }
