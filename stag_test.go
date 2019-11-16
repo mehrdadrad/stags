@@ -1,4 +1,4 @@
-package stag
+package stags
 
 import (
 	"reflect"
@@ -10,61 +10,72 @@ type MyStruct struct {
 	Field2 int    `key1:"value1" key2:"-1.6180"`
 	Field3 string `key1:"911" key2:"-55667788"`
 	Field4 int    `key1:"-55" key2:"66"`
+	Field5 struct {
+		Field1 int `key1:"value1" key2:"178"`
+	}
 }
 
 var s MyStruct
+var st = New(s)
 
 func TestGetNumWrongField(t *testing.T) {
-	_, ok := getNum(s, "Field101", "key1", vBOOL)
+	_, ok := st.getNum(vBOOL, "key1", "Field101")
 	if ok {
 		t.Error("expected false but got,", ok)
 	}
 }
 
 func TestGetNumWrongInt(t *testing.T) {
-	_, ok := getNum(s, "Field1", "key1", vINT)
+	_, ok := st.getNum(vINT, "key1", "Field1")
 	if ok {
 		t.Error("expected false but got,", ok)
 	}
 }
 
 func TestGetNumWrongUint(t *testing.T) {
-	_, ok := getNum(s, "Field1", "key1", vUINT)
+	_, ok := st.getNum(vUINT, "key1", "Field1")
 	if ok {
 		t.Error("expected false but got,", ok)
 	}
 }
 
 func TestGetNumWrongFloat(t *testing.T) {
-	_, ok := getNum(s, "Field1", "key1", vFLOAT32)
+	_, ok := st.getNum(vFLOAT32, "key1", "Field1")
 	if ok {
 		t.Error("expected false but got,", ok)
 	}
 }
 
 func TestGetNumWrongBool(t *testing.T) {
-	_, ok := getNum(s, "Field1", "key2", vBOOL)
+	_, ok := st.getNum(vBOOL, "key2", "Field1")
 	if ok {
 		t.Error("expected false but got,", ok)
 	}
 }
 
 func TestGetNumWrongType(t *testing.T) {
-	_, ok := getNum(s, "Field1", "key2", 100)
+	_, ok := st.getNum(100, "key2", "Field1")
 	if ok {
 		t.Error("expected false but got,", ok)
 	}
 }
 
 func TestGet(t *testing.T) {
-	v := Get(s, "Field2", "key1")
+	v := st.Get("key1", "Field2")
+	if v != "value1" {
+		t.Error("expected key1 but got,", v)
+	}
+}
+
+func TestGetNested(t *testing.T) {
+	v := st.Get("key1", "Field5", "Field1")
 	if v != "value1" {
 		t.Error("expected key1 but got,", v)
 	}
 }
 
 func TestUGet(t *testing.T) {
-	v, ok := get(s, "Field2", "key1")
+	v, ok := st.get("key1", "Field2")
 	if !ok {
 		t.Error("couldn't find key1")
 	}
@@ -77,7 +88,7 @@ func TestUGet(t *testing.T) {
 func TestGetInt(t *testing.T) {
 	t.Parallel()
 
-	n := GetInt(s, "Field3", "key1")
+	n := st.GetInt("key1", "Field3")
 	if n != 911 {
 		t.Error("expected 911 but got,", n)
 	}
@@ -91,7 +102,7 @@ func TestGetInt(t *testing.T) {
 func TestGetInt8(t *testing.T) {
 	t.Parallel()
 
-	n := GetInt8(s, "Field4", "key1")
+	n := st.GetInt8("key1", "Field4")
 	if n != -55 {
 		t.Error("expected -55 but got,", n)
 	}
@@ -106,7 +117,7 @@ func TestGetInt8(t *testing.T) {
 func TestGetInt16(t *testing.T) {
 	t.Parallel()
 
-	n := GetInt16(s, "Field4", "key1")
+	n := st.GetInt16("key1", "Field4")
 	if n != -55 {
 		t.Error("expected -55 but got,", n)
 	}
@@ -121,7 +132,7 @@ func TestGetInt16(t *testing.T) {
 func TestGetInt32(t *testing.T) {
 	t.Parallel()
 
-	n := GetInt32(s, "Field3", "key2")
+	n := st.GetInt32("key2", "Field3")
 	if n != -55667788 {
 		t.Error("expected -55667788 but got,", n)
 	}
@@ -136,7 +147,7 @@ func TestGetInt32(t *testing.T) {
 func TestGetInt64(t *testing.T) {
 	t.Parallel()
 
-	n := GetInt64(s, "Field3", "key2")
+	n := st.GetInt64("key2", "Field3")
 	if n != -55667788 {
 		t.Error("expected -55667788 but got,", n)
 	}
@@ -151,7 +162,7 @@ func TestGetInt64(t *testing.T) {
 func TestGetUint(t *testing.T) {
 	t.Parallel()
 
-	n := GetUint(s, "Field3", "key1")
+	n := st.GetUint("key1", "Field3")
 	if n != 911 {
 		t.Error("expected 911 but got,", n)
 	}
@@ -165,7 +176,7 @@ func TestGetUint(t *testing.T) {
 func TestGetUint8(t *testing.T) {
 	t.Parallel()
 
-	n := GetUint8(s, "Field4", "key2")
+	n := st.GetUint8("key2", "Field4")
 	if n != 66 {
 		t.Error("expected 66 but got,", n)
 	}
@@ -180,7 +191,7 @@ func TestGetUint8(t *testing.T) {
 func TestGetUint16(t *testing.T) {
 	t.Parallel()
 
-	n := GetUint16(s, "Field4", "key2")
+	n := st.GetUint16("key2", "Field4")
 	if n != 66 {
 		t.Error("expected 66 but got,", n)
 	}
@@ -195,7 +206,7 @@ func TestGetUint16(t *testing.T) {
 func TestGetUint32(t *testing.T) {
 	t.Parallel()
 
-	n := GetUint32(s, "Field3", "key1")
+	n := st.GetUint32("key1", "Field3")
 	if n != 911 {
 		t.Error("expected 911 but got,", n)
 	}
@@ -210,7 +221,7 @@ func TestGetUint32(t *testing.T) {
 func TestGetUint64(t *testing.T) {
 	t.Parallel()
 
-	n := GetUint64(s, "Field3", "key1")
+	n := st.GetUint64("key1", "Field3")
 	if n != 911 {
 		t.Error("expected 911 but got,", n)
 	}
@@ -225,7 +236,7 @@ func TestGetUint64(t *testing.T) {
 func TestGetFloat32(t *testing.T) {
 	t.Parallel()
 
-	n := GetFloat32(s, "Field2", "key2")
+	n := st.GetFloat32("key2", "Field2")
 	if n != -1.6180 {
 		t.Error("expected -1.6180 but got,", n)
 	}
@@ -239,7 +250,7 @@ func TestGetFloat32(t *testing.T) {
 func TestGetFloat64(t *testing.T) {
 	t.Parallel()
 
-	n := GetFloat64(s, "Field1", "key2")
+	n := st.GetFloat64("key2", "Field1")
 	if n != 3.14 {
 		t.Error("expected 3.14 but got,", n)
 	}
@@ -254,7 +265,7 @@ func TestGetFloat64(t *testing.T) {
 func TestGetBool(t *testing.T) {
 	t.Parallel()
 
-	n := GetBool(s, "Field1", "key1")
+	n := st.GetBool("key1", "Field1")
 	if n != true {
 		t.Error("expected true but got,", n)
 	}
@@ -267,7 +278,7 @@ func TestGetBool(t *testing.T) {
 }
 
 func TestLookup(t *testing.T) {
-	v, ok := Lookup(s, "Field2", "key1")
+	v, ok := st.Lookup("key1", "Field2")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -280,7 +291,7 @@ func TestLookup(t *testing.T) {
 func TestLookupInt(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupInt(s, "Field3", "key1")
+	n, ok := st.LookupInt("key1", "Field3")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -298,7 +309,7 @@ func TestLookupInt(t *testing.T) {
 func TestLookupInt8(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupInt8(s, "Field4", "key1")
+	n, ok := st.LookupInt8("key1", "Field4")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -317,7 +328,7 @@ func TestLookupInt8(t *testing.T) {
 func TestLookupInt16(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupInt16(s, "Field4", "key1")
+	n, ok := st.LookupInt16("key1", "Field4")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -336,7 +347,7 @@ func TestLookupInt16(t *testing.T) {
 func TestLookupInt32(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupInt32(s, "Field3", "key2")
+	n, ok := st.LookupInt32("key2", "Field3")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -355,7 +366,7 @@ func TestLookupInt32(t *testing.T) {
 func TestLookupInt64(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupInt64(s, "Field3", "key2")
+	n, ok := st.LookupInt64("key2", "Field3")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -374,7 +385,7 @@ func TestLookupInt64(t *testing.T) {
 func TestLookupUint(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupUint(s, "Field3", "key1")
+	n, ok := st.LookupUint("key1", "Field3")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -392,7 +403,7 @@ func TestLookupUint(t *testing.T) {
 func TestLookupUint8(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupUint8(s, "Field4", "key2")
+	n, ok := st.LookupUint8("key2", "Field4")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -411,7 +422,7 @@ func TestLookupUint8(t *testing.T) {
 func TestLookupUint16(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupUint16(s, "Field4", "key2")
+	n, ok := st.LookupUint16("key2", "Field4")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -430,7 +441,7 @@ func TestLookupUint16(t *testing.T) {
 func TestLookupUint32(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupUint32(s, "Field3", "key1")
+	n, ok := st.LookupUint32("key1", "Field3")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -449,7 +460,7 @@ func TestLookupUint32(t *testing.T) {
 func TestLookupUint64(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupUint64(s, "Field3", "key1")
+	n, ok := st.LookupUint64("key1", "Field3")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -468,7 +479,7 @@ func TestLookupUint64(t *testing.T) {
 func TestLookupFloat32(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupFloat32(s, "Field2", "key2")
+	n, ok := st.LookupFloat32("key2", "Field2")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -486,7 +497,7 @@ func TestLookupFloat32(t *testing.T) {
 func TestLookupFloat64(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupFloat64(s, "Field1", "key2")
+	n, ok := st.LookupFloat64("key2", "Field1")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
@@ -505,7 +516,7 @@ func TestLookupFloat64(t *testing.T) {
 func TestLookupBool(t *testing.T) {
 	t.Parallel()
 
-	n, ok := LookupBool(s, "Field1", "key1")
+	n, ok := st.LookupBool("key1", "Field1")
 	if !ok {
 		t.Error("couldn't find field / key")
 	}
