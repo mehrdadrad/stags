@@ -1,6 +1,7 @@
 # stags
+[![Build Status](https://travis-ci.org/mehrdadrad/stags.svg?branch=master)](https://travis-ci.org/mehrdadrad/stags) 
 [![Go Report Card](https://goreportcard.com/badge/github.com/mehrdadrad/stags)](https://goreportcard.com/report/github.com/mehrdadrad/stags)
-[![Coverage Status](https://coveralls.io/repos/github/mehrdadrad/stags/badge.svg?branch=master)](https://coveralls.io/github/mehrdadrad/stags?branch=master)
+[![GoCover](https://gocover.io/_badge/github.com/mehrdadrad/stags)](https://gocover.io/github.com/mehrdadrad/stags)
 [![Godoc](https://godoc.org/github.com/mehrdadrad/stags?status.svg)](https://godoc.org/github.com/mehrdadrad/stags)
 
 Go library to get and convert struct tags values
