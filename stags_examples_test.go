@@ -22,10 +22,10 @@ func ExampleSTags() {
 		panic(err)
 	}
 
- 	err = json.Unmarshal(content, &cfg)
+	err = json.Unmarshal(content, &cfg)
 	if err != nil {
 		panic(err)
-	} 
+	}
 
 	if cfg.Root == "" {
 		cfg.Root = s.Get("default", "Root")
