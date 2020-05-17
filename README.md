@@ -41,7 +41,7 @@ func main() {
  
      debug := s.GetBool("default", "Debug") // returns true, type: bool
  
-     pEnvKey := s.Get("env", "Proxy", "Address") // returns localhost, type: string
+     pEnvKey := s.Get("env", "Proxy", "Address") // returns CFG_ADDR, type: string
      
      value, ok := s.LookupInt64("timeout", "proxy", "timeout") // ok: false
 }
